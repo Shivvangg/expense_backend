@@ -110,4 +110,30 @@ const getMonthlyExpenseSum = async (req, res) => {
     }
 };
 
-module.exports = {createExpense, listExpensesByCategory, getMonthlyExpenseSum};
+const searchExpensesByLabel = async (req, res) => {
+    const {userId, searchTerm} = req.query;
+
+    try{
+        if(!mongoose.Types.ObjectId.isValid(userId)){
+            return res.status(400).json({message: "Invalid user ID"});
+        }
+        if(!searchTerm || searchTerm.trim() === "") {
+            return res.status(400).json({message: "Enter the label to search"});
+        }
+        const expenses = await expense.find({
+            userId: userId,
+            label: { $regex: searchTerm, $options: 'i'}
+        });
+        if(expenses.length === 0){
+            return res.status(404).json({message: "No such expenses found"});
+        }
+        return res.status(200).json({
+            message: "Expense retrieved successfully",
+            expenses: expenses
+        })
+    } catch(error) {
+        return res.status(500).json({message: "Internal Server Error", error: error});
+    }
+};
+
+module.exports = {createExpense, listExpensesByCategory, getMonthlyExpenseSum, searchExpensesByLabel};
