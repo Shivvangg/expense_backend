@@ -1,5 +1,6 @@
 const express = require('express');
-const {createUser, loginUser, createExpense, createCategory, getUserDetails, listExpensesByCategory, searchCategoryById, getMonthlyExpenseSum} = require('../controllers/user');
+const {createUser, loginUser} = require('../controllers/user');
+const expenseController = require('../controllers/expense');
 const router = express.Router();
 
 // user routes
@@ -8,9 +9,9 @@ router.post('/login/user', loginUser);
 router.get('/get/user/:_id', getUserDetails);
 
 //expenses
-router.post('/add/newExpense', createExpense);
-router.post('/expenses/category', listExpensesByCategory);
-router.post('/monthly/expense', getMonthlyExpenseSum);
+router.post('/add/newExpense', expenseController.createExpense);
+router.post('/expenses/category', expenseController.listExpensesByCategory);
+router.post('/monthly/expense', expenseController.getMonthlyExpenseSum);
 
 //category
 router.post('/add/newCategory', createCategory);
